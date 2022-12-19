@@ -1,7 +1,6 @@
 import numpy as np
 from scipy.optimize import minimize_scalar
 from sklearn.tree import DecisionTreeRegressor
-from sklearn.metrics import mean_squared_error
 
 
 class RandomForestMSE:
@@ -125,7 +124,7 @@ class GradientBoostingMSE:
             )
             self.estimators.append(tree.fit(X, y - pred))
             self.weights[i] = minimize_scalar(
-                lambda w: mean_squared_error(y, pred + tree.predict(X) * w)).x
+                lambda w: np.sum((y - pred - w * tree.predict(X)) ** 2)).x
             pred += tree.predict(X) * self.learning_rate * self.weights[i]
         if X_val is not None and y_val is not None:
             pred = self.estimators[0]
